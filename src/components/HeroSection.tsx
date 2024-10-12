@@ -1,7 +1,7 @@
 import './HeroSection.css';
 import { Button, Paper, Stack } from '@mui/material';
 import HeroImage from '../assets/heroimg.jpg';
-import Carousel from 'react-material-ui-carousel'
+import Carousel from 'react-material-ui-carousel';
 
 const items = [
     {
@@ -17,7 +17,6 @@ const items = [
 ];
 
 export default function HeroSection() {
-
     function Item(props: any) {
         return (
             <Paper
@@ -26,20 +25,20 @@ export default function HeroSection() {
                     backgroundImage: `url(${props.item.image})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    height: '400px',
+                    height: '600px',
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '20px',
+                    justifyContent: 'flex-start',  
+                    padding: '20px',               
                     color: 'white',
+                    position: 'relative',           
                 }}
             >
-                <div className="text-content">
+                <div className="text-content" style={{ marginRight: 'auto' }}>
                     <h2>{props.item.name}</h2>
                     <p>{props.item.description}</p>
                 </div>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: '20px', right: '20px' }}>
                     <Button variant="contained">Contained</Button>
                     <Button variant="contained">Contained</Button>
                 </Stack>

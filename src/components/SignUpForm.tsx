@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+
 
 const SignUpForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +18,7 @@ const SignUpForm: React.FC = () => {
     confirmPassword: ''
   });
 
-  const navigate = useNavigate();
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,9 +56,7 @@ const SignUpForm: React.FC = () => {
     }
   };
 
-  const handleSignIn = () => {
-    navigate('/login');
-  };
+  
 
   return (
     <Box sx={{ width: '100%', maxWidth: 400, margin: '0 auto', mt: 5, padding: 3, borderRadius: 2, boxShadow: 3, backgroundColor: '#F5F5F5' }}>

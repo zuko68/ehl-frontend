@@ -8,6 +8,10 @@ import ContactUs from './components/ContactUs';
 import AboutUs from './components/AboutUs';
 import Footer from './components/Footer';
 import { Container } from '@mui/material';
+import SignUpForm from './components/SignUpForm';
+import SignInForm from './components/SignInForm';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 
 function App() {
 
@@ -15,6 +19,13 @@ function App() {
     <>
       <NavBar />
       <HeroSection />
+      <Router>
+            <Routes>
+                <Route path="/" element={<HeroSection />} />
+                <Route path="/signupForm" element={<SignUpForm />} />
+                <Route path="/signin" element={<SignInForm />} />
+            </Routes>
+        </Router>
       <Container>
         <Categories />
         <ProductGrid />

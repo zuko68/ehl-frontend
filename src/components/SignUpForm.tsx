@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Grid, Link } from '@mui/material';
+import { Box, TextField, Button, Typography, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';  // Import React Router's Link
 
 const SignUpForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -76,7 +77,7 @@ const SignUpForm: React.FC = () => {
       </form>
       <Typography variant="body2">
         Already have an account?{' '}
-        <Link href="/signin" underline="none">
+        <Link component={RouterLink} to="/signin" underline="none"> {/* Use React Router's Link */}
           Sign In
         </Link>
       </Typography>

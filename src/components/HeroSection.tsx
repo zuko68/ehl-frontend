@@ -2,6 +2,7 @@ import './HeroSection.css';
 import { Button, Paper, Stack } from '@mui/material';
 import HeroImage from '../assets/heroimg.jpg';
 import Carousel from 'react-material-ui-carousel';
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
 const items = [
     {
@@ -17,6 +18,8 @@ const items = [
 ];
 
 export default function HeroSection() {
+    const navigate = useNavigate();  
+
     function Item(props: any) {
         return (
             <Paper
@@ -39,8 +42,8 @@ export default function HeroSection() {
                 </div>
 
                 <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: '20px', right: '20px' }}>
-                    <Button variant="contained">Contained</Button>
-                    <Button variant="contained">Contained</Button>
+                    <Button variant="contained" onClick={() => navigate('/signin')}>Sign In</Button>
+                    <Button variant="contained" onClick={() => navigate('/signup')}>Sign Up</Button> {/* Navigate to the sign-up page */}
                 </Stack>
             </Paper>
         );

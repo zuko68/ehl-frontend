@@ -1,57 +1,113 @@
-import './HeroSection.css';
-import { Button, Paper, Stack } from '@mui/material';
-import HeroImage from '../assets/heroimg.jpg';
-import Carousel from 'react-material-ui-carousel';
-import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+import { Button, Paper, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import Categories from '../components/Categories';
+import ProductGrid from '../components/ProductGrid';
+import ContactUs from '../components/ContactUs';
+import AboutUs from '../components/AboutUs';
 
-const items = [
-    {
-        name: "Random Name #1",
-        description: "Probably the most random thing you have ever seen!",
-        image: HeroImage
-    },
-    {
-        name: "Random Name #2",
-        description: "Hello World!",
-        image: HeroImage
-    }
-];
+const backgroundImageUrl = 'https://organicflourmills.nz/cdn/shop/products/ofm_wheat-grain.jpg?v=1661384618&width=1445';
 
 export default function HeroSection() {
-    const navigate = useNavigate();  
+    const theme = useTheme();
+    const navigate = useNavigate();
 
-    function Item(props: any) {
-        return (
+    const handleLogin = () => {
+        navigate('/login');
+    };
+
+    const handleSignup = () => {
+        navigate('/signup');
+    };
+
+    return (
+        <>
             <Paper
-                className="carousel-item"
-                style={{
-                    backgroundImage: `url(${props.item.image})`,
+                sx={{
+                    backgroundImage: `url(${backgroundImageUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    height: '600px',
+                    height: '400px',
                     display: 'flex',
-                    justifyContent: 'flex-start',  
-                    padding: '20px',               
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    padding: '40px',
                     color: 'white',
-                    position: 'relative',           
+                    position: 'relative',
+                    textAlign: 'left',
+                    overflow: 'hidden'
                 }}
             >
                 <div className="text-content" style={{ marginRight: 'auto' }}>
-                    <h2>{props.item.name}</h2>
-                    <p>{props.item.description}</p>
+                    <Typography variant="h3" component="h2" sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+                        Welcome to Our Service
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 4, textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
+                        Experience the most seamless and integrated service you’ve ever had!
+                    </Typography>
                 </div>
 
-                <Stack direction="row" spacing={2} style={{ position: 'absolute', bottom: '20px', right: '20px' }}>
-                    <Button variant="contained" onClick={() => navigate('/signin')}>Sign In</Button>
-                    <Button variant="contained" onClick={() => navigate('/signup')}>Sign Up</Button> {/* Navigate to the sign-up page */}
+                <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
+                    sx={{
+                        position: 'absolute',
+                        bottom: '40px',
+                        right: '40px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: { xs: '70%', sm: 'auto' },
+                        margin: '0 auto',
+                        flexWrap: 'wrap',
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        onClick={handleLogin}
+                        sx={{
+                            backgroundColor: '#B8A589',
+                            color: '#1F1F1F',
+                            borderRadius: '15px',
+                            padding: '12px 24px',
+                            fontSize: { xs: '14px', sm: '16px' },
+                            boxShadow: theme.shadows[3],
+                            transition: 'transform 0.2s, background-color 0.2s',
+                            width: { xs: '100%', sm: '200px' },
+                            '&:hover': {
+                                backgroundColor: '#FFD8AA',
+                                transform: 'scale(1.05)',
+                            }
+                        }}
+                    >
+                        LOGIN
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSignup}
+                        sx={{
+                            backgroundColor: '#B8A589',
+                            color: '#1F1F1F',
+                            borderRadius: '15px',
+                            padding: '12px 24px',
+                            fontSize: { xs: '14px', sm: '16px' },
+                            boxShadow: theme.shadows[3],
+                            transition: 'transform 0.2s, background-color 0.2s',
+                            width: { xs: '100%', sm: '200px' },
+                            '&:hover': {
+                                backgroundColor: '#FFD8AA',
+                                transform: 'scale(1.05)',
+                            }
+                        }}
+                    >
+                        SIGNUP
+                    </Button>
                 </Stack>
             </Paper>
-        );
-    }
-
-    return (
-        <Carousel>
-            {items.map((item, i) => <Item key={i} item={item} />)}
-        </Carousel>
+            <Categories />
+            <ProductGrid />
+            <AboutUs />
+            <ContactUs />
+        </>
     );
 }

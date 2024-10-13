@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography, RadioGroup, FormControlLabel, Radio, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const SignUpForm: React.FC = () => {
@@ -7,15 +7,22 @@ const SignUpForm: React.FC = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    userType: 'retailer', // Default user type
+    companyName: '', // Field for wholesaler
   });
 
   const [errors, setErrors] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    companyName: '', // Error for company name
   });
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar open state
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('error'); // Snackbar severity
 
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -25,7 +32,7 @@ const SignUpForm: React.FC = () => {
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple validation
@@ -33,7 +40,8 @@ const SignUpForm: React.FC = () => {
       username: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      companyName: '',
     };
 
     if (!formData.username) {
@@ -48,18 +56,51 @@ const SignUpForm: React.FC = () => {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
+    if (formData.userType === 'wholesaler' && !formData.companyName) {
+      newErrors.companyName = 'Company name is required for wholesalers';
+    }
 
     setErrors(newErrors);
 
     // If no errors, handle sign-up logic
-    if (!newErrors.username && !newErrors.email && !newErrors.password && !newErrors.confirmPassword) {
-      console.log(formData);
-      // Handle Sign Up Logic Here
+    if (!Object.values(newErrors).some(error => error)) {
+      try {
+        const response = await fetch('http://localhost:3000/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Signup failed');
+        }
+
+        // If signup is successful, redirect or show a success message
+        setSnackbarMessage('Signup successful!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+        navigate('/login'); // Optionally navigate to login after successful signup
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        // Handle errors
+        console.log(error.message || 'An unexpected error occurred');
+        setSnackbarMessage(error.message || 'An unexpected error occurred');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      }
     }
   };
 
   const handleSignIn = () => {
     navigate('/login'); // Navigate to sign-in page
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -167,6 +208,50 @@ const SignUpForm: React.FC = () => {
             },
           }}
         />
+        
+        {/* User Type Selection */}
+        <Typography variant="h6" gutterBottom sx={{ color: '#B8A589' }}>
+          Select User Type
+        </Typography>
+        <RadioGroup
+          row
+          name="userType"
+          value={formData.userType}
+          onChange={handleChange}
+          sx={{ mb: 2 }}
+        >
+          <FormControlLabel value="retailer" control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />} label="Retailer" />
+          <FormControlLabel value="wholesaler" control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />} label="Wholesaler" />
+        </RadioGroup>
+
+        {/* Conditional Rendering for Company Name */}
+        {formData.userType === 'wholesaler' && (
+          <TextField
+            fullWidth
+            label="Company Name"
+            name="companyName"
+            variant="outlined"
+            margin="normal"
+            value={formData.companyName}
+            onChange={handleChange}
+            error={!!errors.companyName}
+            helperText={errors.companyName}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#B8A589',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#FFD8AA',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#FFD8AA',
+                },
+              },
+            }}
+          />
+        )}
+
         <Button
           fullWidth
           type="submit"
@@ -193,6 +278,13 @@ const SignUpForm: React.FC = () => {
           Sign In
         </Button>
       </Typography>
+
+      {/* Snackbar for error/success messages */}
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

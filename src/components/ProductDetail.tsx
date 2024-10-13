@@ -69,20 +69,6 @@ const ProductDetail: React.FC = () => {
       >
         Add to Cart
       </Button>
-      <Button 
-        variant="contained" 
-        color="primary" 
-        sx={{ 
-          backgroundColor: '#A68A58', 
-          '&:hover': { backgroundColor: '#B4A266' }, 
-          display: 'block', 
-          margin: '20px auto 0' 
-        }}
-        component={Link} 
-        to="/products" 
-      >
-        Back to Products
-      </Button>
     </Container>
   );
 };

@@ -21,7 +21,7 @@ const SignInForm: React.FC = () => {
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple validation
@@ -41,11 +41,32 @@ const SignInForm: React.FC = () => {
 
     // If no errors, handle sign-in logic
     if (!newErrors.email && !newErrors.password) {
-      console.log(formData);
-      // Handle Sign In Logic Here (e.g., API call)
+      try {
+        // API call to sign in
+        const response = await fetch('http://localhost:3000/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
 
-      // On successful sign-in, navigate to a different route
-      navigate('/'); // Redirect to the homepage or dashboard
+        if (!response.ok) {
+          throw new Error('Invalid email or password');
+        }
+
+        const data = await response.json();
+
+        // Save the auth token in session storage
+        sessionStorage.setItem('auth-token', data.accessToken);
+
+        // On successful sign-in, navigate to the dashboard
+        navigate('/dashboard'); // Redirect to the dashboard
+      } catch (error) {
+        // Handle error (show error message to user)
+        console.error('Error during sign-in:', error);
+        setErrors({ ...errors, email: 'Invalid email or password' });
+      }
     }
   };
 

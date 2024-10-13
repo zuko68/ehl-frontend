@@ -10,26 +10,54 @@ import {
     Button,
     Badge,
 } from "@mui/material";
-import { Restaurant, ShoppingCart } from "@mui/icons-material"; // Import ShoppingCart icon
+import { Restaurant, ShoppingCart, Logout, AccountCircle } from "@mui/icons-material"; // Import AccountCircle icon
 import MenuIcon from '@mui/icons-material/Menu';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useCart } from '../contexts/CartContext'; // Import useCart
+import { useCart } from '../contexts/CartContext';
 
-// Add the Products page to the pages array
 const pages = [
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
     { name: 'Products', path: '/products' },
-    { name: 'Login', path: '/login' },
-    { name: 'Sign Up', path: '/signup' },
 ];
 
 export default function NavBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [anchorElAccount, setAnchorElAccount] = React.useState<null | HTMLElement>(null); // Account menu anchor
     const location = useLocation();
-    const { state } = useCart(); // Access cart state from context
-    const totalItems = state.getTotalItems(); // Calculate total items
+    const { state } = useCart();
+    const totalItems = state.getTotalItems();
+    const [username, setUsername] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserDetails = async () => {
+            const token = sessionStorage.getItem('auth-token');
+            if (token) {
+                try {
+                    const response = await fetch('http://localhost:3000/user-me', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUsername(data.name); // Assuming the response has a 'username' field
+                        console.log(username);
+                    } else {
+                        console.error("Failed to fetch user details");
+                    }
+                } catch (error) {
+                    console.error("Error fetching user details:", error);
+                    console.log(token)
+                }
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -39,6 +67,22 @@ export default function NavBar() {
         setAnchorElNav(null);
     };
 
+    const handleOpenAccountMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElAccount(event.currentTarget);
+    };
+
+    const handleCloseAccountMenu = () => {
+        setAnchorElAccount(null);
+    };
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('auth-token');
+        setUsername(null); // Clear the username on logout
+        window.location.href = '/'; // Redirect to home
+    };
+
+    const isLoggedIn = !!sessionStorage.getItem('auth-token');
+
     return (
         <AppBar position="static" sx={{ background: 'linear-gradient(135deg, #B8A589 30%, #FFD8AA 70%, #B4A266 100%, #F4AF5E 100%)' }}>
             <Container maxWidth="xl">
@@ -46,8 +90,8 @@ export default function NavBar() {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton
                             component={Link}
-                            to="/" 
-                            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} 
+                            to="/"
+                            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                         >
                             <Restaurant />
                         </IconButton>
@@ -55,7 +99,7 @@ export default function NavBar() {
                             variant="h6"
                             noWrap
                             component={Link}
-                            to="/" 
+                            to="/"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
@@ -99,10 +143,10 @@ export default function NavBar() {
                             >
                                 {pages.map((page) => (
                                     <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                                        <Typography 
-                                            component={Link} 
-                                            to={page.path} 
-                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }} 
+                                        <Typography
+                                            component={Link}
+                                            to={page.path}
+                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
                                         >
                                             {page.name}
                                         </Typography>
@@ -114,8 +158,8 @@ export default function NavBar() {
                         <Typography
                             variant="h5"
                             noWrap
-                            component={Link} 
-                            to="/" 
+                            component={Link}
+                            to="/"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'flex', md: 'none' },
@@ -133,7 +177,7 @@ export default function NavBar() {
                     <Box
                         sx={{
                             display: 'flex',
-                            alignItems: 'center', // Align items vertically
+                            alignItems: 'center',
                         }}
                     >
                         <Box
@@ -145,20 +189,20 @@ export default function NavBar() {
                             {pages.map((page) => (
                                 <Button
                                     key={page.name}
-                                    component={Link} 
-                                    to={page.path} 
+                                    component={Link}
+                                    to={page.path}
                                     onClick={handleCloseNavMenu}
                                     sx={{
                                         my: 2,
-                                        color: location.pathname === page.path ? '#FFD700' : 'white', 
-                                        backgroundColor: location.pathname === page.path ? '#B8A589' : 'transparent', 
+                                        color: location.pathname === page.path ? '#FFD700' : 'white',
+                                        backgroundColor: location.pathname === page.path ? '#B8A589' : 'transparent',
                                         '&:hover': {
-                                            backgroundColor: location.pathname === page.path ? '#FFD700' : 'rgba(255, 255, 255, 0.1)', 
+                                            backgroundColor: location.pathname === page.path ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
                                         },
                                         display: 'block',
                                         textDecoration: 'none',
-                                        borderRadius: 1, 
-                                    }} 
+                                        borderRadius: 1,
+                                    }}
                                 >
                                     {page.name}
                                 </Button>
@@ -167,12 +211,12 @@ export default function NavBar() {
                         {/* Cart Icon with Badge on Right Side */}
                         <IconButton
                             component={Link}
-                            to="/cart" // Link to the cart page
+                            to="/cart"
                             color="inherit"
-                            sx={{ position: 'relative', ml: 2 }} // Margin for spacing
+                            sx={{ position: 'relative', ml: 2 }} 
                         >
-                            <Badge 
-                                badgeContent={totalItems} // Show the total items in the cart
+                            <Badge
+                                badgeContent={totalItems}
                                 color="primary"
                                 showZero
                                 max={100}
@@ -180,6 +224,57 @@ export default function NavBar() {
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>
+                        {/* Account Icon with Menu for Login and Signup */}
+                        {!isLoggedIn && ( // Render AccountCircle only if not logged in
+                            <IconButton
+                                onClick={handleOpenAccountMenu}
+                                sx={{
+                                    color: 'white',
+                                    ml: 2,
+                                }}
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                        )}
+                        <Menu
+                            anchorEl={anchorElAccount}
+                            open={Boolean(anchorElAccount)}
+                            onClose={handleCloseAccountMenu}
+                        >
+                            {isLoggedIn ? (
+                                <>
+                                    <MenuItem disabled>
+                                        {username}
+                                    </MenuItem>
+                                </>
+                            ) : (
+                                <>
+                                    <MenuItem
+                                        component={Link}
+                                        to="/login"
+                                        onClick={handleCloseAccountMenu}
+                                    >
+                                        Login
+                                    </MenuItem>
+                                    <MenuItem
+                                        component={Link}
+                                        to="/signup"
+                                        onClick={handleCloseAccountMenu}
+                                    >
+                                        Sign Up
+                                    </MenuItem>
+                                </>
+                            )}
+                        </Menu>
+                        {/* Logout Icon */}
+                        {isLoggedIn && (
+                            <IconButton
+                                onClick={handleLogout}
+                                sx={{ color: 'white', ml: 2 }}
+                            >
+                                <Logout />
+                            </IconButton>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>

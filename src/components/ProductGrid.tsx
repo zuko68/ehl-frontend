@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Grid,
   Card,
@@ -8,6 +8,8 @@ import {
   CardActions,
   Button,
   Container,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext'; // Import useCart
@@ -32,12 +34,26 @@ const products = [
 
 const ProductGrid: React.FC = () => {
   const { dispatch } = useCart(); // Access dispatch from context
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message
 
   const handleAddToCart = (product: { id: number; name: string; price: number }) => {
     dispatch({ type: 'ADD_ITEM', item: {
       id: product.id, name: product.name, quantity: 1,
       price: product.price
     } });
+
+    // Update snackbar state
+    setSnackbarMessage(`${product.name} added to cart!`);
+    setSnackbarOpen(true);
+  };
+
+  // Close snackbar
+  const handleCloseSnackbar = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -80,10 +96,10 @@ const ProductGrid: React.FC = () => {
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
-                <Button size="small" variant="contained" color="primary" onClick={() => handleAddToCart(product)}>
+                <Button sx={{ backgroundColor: '#FFD8AA', color: 'black' }} size="small" variant="contained" onClick={() => handleAddToCart(product)}>
                   Add to Cart
                 </Button>
-                <Button size="small" variant="outlined" color="primary" component={Link} to={`/product/${product.id}`}>
+                <Button size="small" variant="outlined" sx={{ color: 'black', borderColor: '#FFD8AA' }} component={Link} to={`/product/${product.id}`}>
                   Learn More
                 </Button>
               </CardActions>
@@ -91,6 +107,13 @@ const ProductGrid: React.FC = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Snackbar Component */}
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

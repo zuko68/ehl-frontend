@@ -1,16 +1,33 @@
 import { Button, Paper, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Categories from '../components/Categories';
+import ProductGrid from '../components/ProductGrid';
+import ContactUs from '../components/ContactUs';
+import AboutUs from '../components/AboutUs';
 
 // Static background image URL
 const backgroundImageUrl = 'https://organicflourmills.nz/cdn/shop/products/ofm_wheat-grain.jpg?v=1661384618&width=1445';
 
 export default function HeroSection() {
     const theme = useTheme();
+    const navigate = useNavigate(); // Initialize navigate
+
+    // Navigation functions
+    const handleLogin = () => {
+        navigate('/login'); // Replace with your login page route
+    };
+
+    const handleSignup = () => {
+        navigate('/signup'); // Replace with your signup page route
+    };
 
     return (
+        <>
+        <br />
         <Paper
             sx={{
-                backgroundImage: `url(${backgroundImageUrl})`, // Fixed the syntax for the background image URL
+                backgroundImage: `url(${backgroundImageUrl})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 height: '400px',
@@ -35,7 +52,7 @@ export default function HeroSection() {
             </div>
             <br /><br />
             <Stack
-                direction={{ xs: 'column', sm: 'row' }} // Stack buttons on smaller screens
+                direction={{ xs: 'column', sm: 'row' }}
                 spacing={2}
                 sx={{
                     position: 'absolute',
@@ -44,22 +61,23 @@ export default function HeroSection() {
                     display: 'flex',
                     justifyContent: 'center',
                     width: 'auto',
-                    flexWrap: 'wrap', // Allow wrapping on smaller screens
+                    flexWrap: 'wrap',
                 }}
             >
                 <Button
                     variant="contained"
+                    onClick={handleLogin} // Add onClick handler
                     sx={{
-                        backgroundColor: '#B8A589', // Modern button color
-                        color: '#1F1F1F', // Blackish text color
+                        backgroundColor: '#B8A589',
+                        color: '#1F1F1F',
                         borderRadius: '15px',
                         padding: '12px 24px',
-                        fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
+                        fontSize: { xs: '14px', sm: '16px' },
                         boxShadow: theme.shadows[3],
-                        transition: 'transform 0.2s, background-color 0.2s', // Smooth transition
-                        width: { xs: '300px', sm: '200px' },  // Full width on extra small screens, fixed width on larger
+                        transition: 'transform 0.2s, background-color 0.2s',
+                        width: { xs: '300px', sm: '200px' },
                         '&:hover': {
-                            backgroundColor: '#FFD8AA', // Color on hover
+                            backgroundColor: '#FFD8AA',
                             transform: 'scale(1.05)',
                         }
                     }}
@@ -68,18 +86,18 @@ export default function HeroSection() {
                 </Button>
                 <Button
                     variant="contained"
+                    onClick={handleSignup} // Add onClick handler
                     sx={{
-                        backgroundColor: '#B8A589', // Modern button color
-                        color: '#1F1F1F', // Blackish text color
+                        backgroundColor: '#B8A589',
+                        color: '#1F1F1F',
                         borderRadius: '15px',
                         padding: '12px 24px',
-                        fontSize: { xs: '14px', sm: '16px' }, // Responsive font size
-                        
+                        fontSize: { xs: '14px', sm: '16px' },
                         boxShadow: theme.shadows[3],
-                        transition: 'transform 0.2s, background-color 0.2s', // Smooth transition
-                        width: { xs: '300px', sm: '200px' },  // Full width on extra small screens, fixed width on larger
+                        transition: 'transform 0.2s, background-color 0.2s',
+                        width: { xs: '300px', sm: '200px' },
                         '&:hover': {
-                            backgroundColor: '#FFD8AA', // Color on hover
+                            backgroundColor: '#FFD8AA',
                             transform: 'scale(1.05)',
                         }
                     }}
@@ -88,5 +106,10 @@ export default function HeroSection() {
                 </Button>
             </Stack>
         </Paper>
+        <Categories />
+        <ProductGrid />
+        <AboutUs />
+        <ContactUs />
+        </>
     );
 }

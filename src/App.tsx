@@ -11,16 +11,18 @@ import AboutUs from './components/AboutUs';
 import SignInForm from './components/SignInForm'; // Import your SignInForm
 import SignUpForm from './components/SignUpForm'; // Import your SignUpForm
 import NotFound from './components/NotFound'; // Import NotFound component
-import { Container } from '@mui/material';
 import ProductDetail from './components/ProductDetail';
+import { CartProvider } from './contexts/CartContext';
+import Cart from './components/Cart';
 
 function App() {
   return (
     <>
       <NavBar />
-      <Container>
+      <CartProvider>
         <Routes>
           <Route path="/" element={<HeroSection />} /> {/* Home landing page */}
+          <Route path="/cart" element={<Cart />} /> {/* Home landing page */}
           <Route path="/login" element={<SignInForm />} /> {/* Login page */}
           <Route path="/signup" element={<SignUpForm />} /> {/* Signup page */}
           <Route path="/categories" element={<Categories />} /> {/* Categories page if needed */}
@@ -30,7 +32,7 @@ function App() {
           <Route path="/contact" element={<ContactUs />} /> {/* Contact Us page if needed */}
           <Route path="*" element={<NotFound />} /> {/* Handle unknown paths */}
         </Routes>
-      </Container>
+      </CartProvider>
       <Footer />
     </>
   );

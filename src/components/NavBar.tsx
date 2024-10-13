@@ -1,9 +1,21 @@
-import { AppBar, Container, Toolbar, Typography, Box, IconButton, Menu, MenuItem, Button } from "@mui/material";
-import { Restaurant } from "@mui/icons-material";
+import {
+    AppBar,
+    Container,
+    Toolbar,
+    Typography,
+    Box,
+    IconButton,
+    Menu,
+    MenuItem,
+    Button,
+    Badge,
+} from "@mui/material";
+import { Restaurant, ShoppingCart } from "@mui/icons-material"; // Import ShoppingCart icon
 import MenuIcon from '@mui/icons-material/Menu';
 import { Grain } from "@mui/icons-material";
 import React from "react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation from react-router-dom
+import { Link, useLocation } from "react-router-dom";
+import { useCart } from '../contexts/CartContext'; // Import useCart
 
 // Add the Products page to the pages array
 const pages = [
@@ -16,7 +28,9 @@ const pages = [
 
 export default function NavBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const location = useLocation(); // Get the current location
+    const location = useLocation();
+    const { state } = useCart(); // Access cart state from context
+    const totalItems = state.cartItems.reduce((acc, item) => acc + item.quantity, 0); // Calculate total items
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -31,9 +45,9 @@ export default function NavBar() {
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <IconButton
-                        component={Link} // Make the icon clickable
-                        to="/" // Link to home page
-                        sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} // Only display on medium screens and up
+                        component={Link}
+                        to="/" 
+                        sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} 
                     >
                         <Restaurant />
                     </IconButton>
@@ -129,21 +143,34 @@ export default function NavBar() {
                                 onClick={handleCloseNavMenu}
                                 sx={{
                                     my: 2,
-                                    color: location.pathname === page.path ? '#FFD700' : 'white', // Highlight the active page
-                                    backgroundColor: location.pathname === page.path ? '#B8A589' : 'transparent', // Change background for active page
+                                    color: location.pathname === page.path ? '#FFD700' : 'white', 
+                                    backgroundColor: location.pathname === page.path ? '#B8A589' : 'transparent', 
                                     '&:hover': {
-                                        backgroundColor: location.pathname === page.path ? '#FFD700' : 'rgba(255, 255, 255, 0.1)', // Hover effect
+                                        backgroundColor: location.pathname === page.path ? '#FFD700' : 'rgba(255, 255, 255, 0.1)', 
                                     },
                                     display: 'block',
                                     textDecoration: 'none',
-                                    borderRadius: 1, // Optional: Add border radius for rounded buttons
+                                    borderRadius: 1, 
                                 }} 
                             >
                                 {page.name}
                             </Button>
                         ))}
+                        {/* Cart Icon with Badge */}
+                        <IconButton
+                            component={Link}
+                            to="/cart" // Link to the cart page
+                            color="inherit"
+                            sx={{ position: 'relative', ml: 2 }} // Margin for spacing
+                        >
+                            <Badge 
+                                badgeContent={totalItems} // Show the total items in the cart
+                                color="secondary" 
+                            >
+                                <ShoppingCart />
+                            </Badge>
+                        </IconButton>
                     </Box>
-
                 </Toolbar>
             </Container>
         </AppBar>

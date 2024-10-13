@@ -1,4 +1,19 @@
-body{
-    background-color: #0e83cc;
+body {
     margin: 0;
+    background: linear-gradient(135deg,#B8A589, #FFD8AA, #B4A266, #F4AF5E);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+}
+
+/* Animation for a smooth gradient transition */
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }

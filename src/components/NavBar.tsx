@@ -4,7 +4,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Grain } from "@mui/icons-material";
 import React from "react";
 
-
 const pages = ['About', 'Contact'];
 
 export default function NavBar() {
@@ -19,7 +18,7 @@ export default function NavBar() {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ background: 'linear-gradient(135deg, #B8A589 30%, #FFD8AA 70%, #B4A266 100%, #F4AF5E 100%)' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Restaurant sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />

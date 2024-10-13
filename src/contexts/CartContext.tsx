@@ -3,28 +3,29 @@ import React, { createContext, useContext, useReducer } from 'react';
 export const ADD_ITEM = 'ADD_ITEM';
 export const REMOVE_ITEM = 'REMOVE_ITEM';
 export const CLEAR_CART = 'CLEAR_CART';
-export const MINUS_ITEM = 'MINUS_ITEM'; // Add this line
+export const MINUS_ITEM = 'MINUS_ITEM';
 
-// Update CartItem interface to include price
 interface CartItem {
     id: number;
     name: string;
     quantity: number;
-    price: number; // New field for price
+    price: number;
 }
 
 interface CartState {
     cartItems: CartItem[];
+    getTotalItems: () => number;
 }
 
 export type CartAction =
   | { type: typeof ADD_ITEM; item: { id: number; name: string; price: number; quantity?: number } }
   | { type: typeof REMOVE_ITEM; id: number }
   | { type: typeof CLEAR_CART }
-  | { type: typeof MINUS_ITEM; id: number }; // Include MINUS_ITEM here
+  | { type: typeof MINUS_ITEM; id: number };
 
 const initialState: CartState = {
-    cartItems: []
+    cartItems: [],
+    getTotalItems: () => 0,
 };
 
 const CartContext = createContext<{
@@ -38,17 +39,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             case 'ADD_ITEM': {
                 const existingItem = state.cartItems.find(item => item.id === action.item.id);
                 if (existingItem) {
-                    // Increase quantity by 1 if the item already exists
                     return {
                         ...state,
                         cartItems: state.cartItems.map(item =>
                             item.id === action.item.id
-                                ? { ...item, quantity: item.quantity + 1 } // Always increase by 1
+                                ? { ...item, quantity: item.quantity + 1 }
                                 : item
                         ),
                     };
                 }
-                // If the item does not exist, add it to the cart with a quantity of 1
                 return { ...state, cartItems: [...state.cartItems, { ...action.item, quantity: 1 }] };
             }
             
@@ -58,24 +57,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             case 'MINUS_ITEM': {
                 const existingItem = state.cartItems.find(item => item.id === action.id);
                 if (existingItem) {
-                    // Decrease quantity by 1
                     const newQuantity = existingItem.quantity - 1;
                     if (newQuantity > 0) {
-                        // If quantity is still greater than 0, update the quantity
                         return {
                             ...state,
                             cartItems: state.cartItems.map(item =>
                                 item.id === action.id
-                                    ? { ...item, quantity: newQuantity } // Update quantity
+                                    ? { ...item, quantity: newQuantity }
                                     : item
                             ),
                         };
                     } else {
-                        // If quantity is 0, remove the item from the cart
                         return { ...state, cartItems: state.cartItems.filter(item => item.id !== action.id) };
                     }
                 }
-                return state; // Return the current state if item doesn't exist
+                return state;
             }
         
             case 'CLEAR_CART':
@@ -86,8 +82,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }        
     }, initialState);
 
+    // Method to calculate the total quantity of items in the cart
+    const getTotalItems = () => {
+        let total = 0;
+        state.cartItems.forEach(item => {
+            total += item.quantity;
+        });
+        return total;
+    };
+
+    // Update state to include getTotalItems method
+    const updatedState = {
+        ...state,
+        getTotalItems, // Assign the direct method
+    };
+
     return (
-        <CartContext.Provider value={{ state, dispatch }}>
+        <CartContext.Provider value={{ state: updatedState, dispatch }}>
             {children}
         </CartContext.Provider>
     );

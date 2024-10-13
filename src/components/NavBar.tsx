@@ -5,9 +5,11 @@ import { Grain } from "@mui/icons-material";
 import React from "react";
 import { Link, useLocation } from "react-router-dom"; // Import useLocation from react-router-dom
 
+// Add the Products page to the pages array
 const pages = [
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Products', path: '/products' },
     { name: 'Login', path: '/login' },
     { name: 'Sign Up', path: '/signup' },
 ];

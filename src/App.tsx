@@ -10,7 +10,9 @@ import ContactUs from './components/ContactUs';
 import AboutUs from './components/AboutUs';
 import SignInForm from './components/SignInForm'; // Import your SignInForm
 import SignUpForm from './components/SignUpForm'; // Import your SignUpForm
+import NotFound from './components/NotFound'; // Import NotFound component
 import { Container } from '@mui/material';
+import ProductDetail from './components/ProductDetail';
 
 function App() {
   return (
@@ -23,8 +25,10 @@ function App() {
           <Route path="/signup" element={<SignUpForm />} /> {/* Signup page */}
           <Route path="/categories" element={<Categories />} /> {/* Categories page if needed */}
           <Route path="/products" element={<ProductGrid />} /> {/* Products page if needed */}
+          <Route path="/product/:id" element={<ProductDetail />} /> { /* Products Detail Page */ }
           <Route path="/about" element={<AboutUs />} /> {/* About Us page if needed */}
           <Route path="/contact" element={<ContactUs />} /> {/* Contact Us page if needed */}
+          <Route path="*" element={<NotFound />} /> {/* Handle unknown paths */}
         </Routes>
       </Container>
       <Footer />

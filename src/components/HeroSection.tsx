@@ -24,92 +24,94 @@ export default function HeroSection() {
 
     return (
         <>
-        <br />
-        <Paper
-            sx={{
-                backgroundImage: `url(${backgroundImageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                height: '400px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                padding: '40px',
-                color: 'white',
-                position: 'relative',
-                textAlign: 'left',
-                overflow: 'hidden'
-            }}
-        >
-            <div className="text-content" style={{ marginRight: 'auto' }}>
-                <Typography variant="h3" component="h2" sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
-                    Welcome to Our Service
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 4, textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
-                    Experience the most seamless and integrated service you’ve ever had!
-                </Typography>
-            </div>
-            <br /><br />
-            <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
+            <br />
+            <Paper
                 sx={{
-                    position: 'absolute',
-                    bottom: '40px',
-                    right: '40px',
+                    backgroundImage: `url(${backgroundImageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    height: '400px',
                     display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: 'center',
-                    width: 'auto',
-                    flexWrap: 'wrap',
+                    alignItems: 'flex-start',
+                    padding: '40px',
+                    color: 'white',
+                    position: 'relative',
+                    textAlign: 'left',
+                    overflow: 'hidden'
                 }}
             >
-                <Button
-                    variant="contained"
-                    onClick={handleLogin} // Add onClick handler
+                <div className="text-content" style={{ marginRight: 'auto' }}>
+                    <Typography variant="h3" component="h2" sx={{ fontWeight: 'bold', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+                        Welcome to Our Service
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 4, textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)' }}>
+                        Experience the most seamless and integrated service you’ve ever had!
+                    </Typography>
+                </div>
+                <br /><br /><br />
+                <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={2}
                     sx={{
-                        backgroundColor: '#B8A589',
-                        color: '#1F1F1F',
-                        borderRadius: '15px',
-                        padding: '12px 24px',
-                        fontSize: { xs: '14px', sm: '16px' },
-                        boxShadow: theme.shadows[3],
-                        transition: 'transform 0.2s, background-color 0.2s',
-                        width: { xs: '300px', sm: '200px' },
-                        '&:hover': {
-                            backgroundColor: '#FFD8AA',
-                            transform: 'scale(1.05)',
-                        }
+                        position: 'absolute',
+                        bottom: '40px',
+                        right: '40px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: { xs: '70%', sm: 'auto' }, // 70% width on small screens
+                        margin: '0 auto', // Center the stack
+                        flexWrap: 'wrap',
                     }}
                 >
-                    LOGIN
-                </Button>
-                <Button
-                    variant="contained"
-                    onClick={handleSignup} // Add onClick handler
-                    sx={{
-                        backgroundColor: '#B8A589',
-                        color: '#1F1F1F',
-                        borderRadius: '15px',
-                        padding: '12px 24px',
-                        fontSize: { xs: '14px', sm: '16px' },
-                        boxShadow: theme.shadows[3],
-                        transition: 'transform 0.2s, background-color 0.2s',
-                        width: { xs: '300px', sm: '200px' },
-                        '&:hover': {
-                            backgroundColor: '#FFD8AA',
-                            transform: 'scale(1.05)',
-                        }
-                    }}
-                >
-                    SIGNUP
-                </Button>
-            </Stack>
-        </Paper>
-        <Categories />
-        <ProductGrid />
-        <AboutUs />
-        <ContactUs />
+                    <Button
+                        variant="contained"
+                        onClick={handleLogin} // Add onClick handler
+                        sx={{
+                            backgroundColor: '#B8A589',
+                            color: '#1F1F1F',
+                            borderRadius: '15px',
+                            padding: '12px 24px',
+                            fontSize: { xs: '14px', sm: '16px' },
+                            boxShadow: theme.shadows[3],
+                            transition: 'transform 0.2s, background-color 0.2s',
+                            width: { xs: '100%', sm: '200px' }, // 100% width on small screens
+                            '&:hover': {
+                                backgroundColor: '#FFD8AA',
+                                transform: 'scale(1.05)',
+                            }
+                        }}
+                    >
+                        LOGIN
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={handleSignup} // Add onClick handler
+                        sx={{
+                            backgroundColor: '#B8A589',
+                            color: '#1F1F1F',
+                            borderRadius: '15px',
+                            padding: '12px 24px',
+                            fontSize: { xs: '14px', sm: '16px' },
+                            boxShadow: theme.shadows[3],
+                            transition: 'transform 0.2s, background-color 0.2s',
+                            width: { xs: '100%', sm: '200px' }, // 100% width on small screens
+                            '&:hover': {
+                                backgroundColor: '#FFD8AA',
+                                transform: 'scale(1.05)',
+                            }
+                        }}
+                    >
+                        SIGNUP
+                    </Button>
+                </Stack>
+
+            </Paper>
+            <Categories />
+            <ProductGrid />
+            <AboutUs />
+            <ContactUs />
         </>
     );
 }

@@ -12,9 +12,11 @@ import SignInForm from './components/SignInForm'; // Import your SignInForm
 import SignUpForm from './components/SignUpForm'; // Import your SignUpForm
 import NotFound from './components/NotFound'; // Import NotFound component
 import Dashboard from './components/Dashboard';
+import CheckoutPage from './components/CheckoutPage';
 import ProductDetail from './components/ProductDetail';
 import { CartProvider } from './contexts/CartContext';
 import Cart from './components/Cart';
+import EthiopiaMap from './components/EthiopiaMap';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <CartProvider>
         <Routes>
           <Route path="/" element={<HeroSection />} /> {/* Home landing page */}
+          <Route path="/wholesalers-map" element={<EthiopiaMap />} /> {/* Home landing page */}
+          <Route path="/checkout" element={<CheckoutPage />} /> {/* Home landing page */}
           <Route path="/dashboard" element={<Dashboard />} /> {/* Home landing page */}
           <Route path="/cart" element={<Cart />} /> {/* Home landing page */}
           <Route path="/login" element={<SignInForm />} /> {/* Login page */}

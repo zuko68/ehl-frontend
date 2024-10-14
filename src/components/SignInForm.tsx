@@ -43,7 +43,7 @@ const SignInForm: React.FC = () => {
     if (!newErrors.email && !newErrors.password) {
       try {
         // API call to sign in
-        const response = await fetch('http://localhost:3000/login', {
+        const response = await fetch('http://localhost:8000/api/v1/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const SignInForm: React.FC = () => {
         const data = await response.json();
 
         // Save the auth token in session storage
-        sessionStorage.setItem('auth-token', data.accessToken);
+        sessionStorage.setItem('auth-token', data.access_token);
 
         // On successful sign-in, navigate to the dashboard
         navigate('/dashboard'); // Redirect to the dashboard

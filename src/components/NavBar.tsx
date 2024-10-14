@@ -10,7 +10,7 @@ import {
     Button,
     Badge,
 } from "@mui/material";
-import { Restaurant, ShoppingCart, Logout, AccountCircle } from "@mui/icons-material"; // Import AccountCircle icon
+import { Restaurant, ShoppingCart, AccountCircle } from "@mui/icons-material"; // Import AccountCircle icon
 import MenuIcon from '@mui/icons-material/Menu';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -20,6 +20,7 @@ const pages = [
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
     { name: 'Products', path: '/products' },
+    { name: 'Wholesalers Map', path: '/wholesalers-map' }, // New Page
 ];
 
 export default function NavBar() {
@@ -35,7 +36,7 @@ export default function NavBar() {
             const token = sessionStorage.getItem('auth-token');
             if (token) {
                 try {
-                    const response = await fetch('http://localhost:3000/user-me', {
+                    const response = await fetch('http://localhost:8000/api/v1/users/me', {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -44,14 +45,12 @@ export default function NavBar() {
                     });
                     if (response.ok) {
                         const data = await response.json();
-                        setUsername(data.name); // Assuming the response has a 'username' field
-                        console.log(username);
+                        setUsername(data.name); // Assuming the response has a 'name' field
                     } else {
                         console.error("Failed to fetch user details");
                     }
                 } catch (error) {
                     console.error("Error fetching user details:", error);
-                    console.log(token)
                 }
             }
         };
@@ -152,6 +151,18 @@ export default function NavBar() {
                                         </Typography>
                                     </MenuItem>
                                 ))}
+                                {/* Add dashboard link conditionally */}
+                                {isLoggedIn && (
+                                    <MenuItem key="Dashboard" onClick={handleCloseNavMenu}>
+                                        <Typography
+                                            component={Link}
+                                            to="/dashboard"
+                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+                                        >
+                                            Dashboard
+                                        </Typography>
+                                    </MenuItem>
+                                )}
                             </Menu>
                         </Box>
                         <Restaurant sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -207,74 +218,70 @@ export default function NavBar() {
                                     {page.name}
                                 </Button>
                             ))}
+                            {/* Add dashboard button conditionally */}
+                            {isLoggedIn && (
+                                <Button
+                                    component={Link}
+                                    to="/dashboard"
+                                    onClick={handleCloseNavMenu}
+                                    sx={{
+                                        my: 2,
+                                        color: location.pathname === '/dashboard' ? '#FFD700' : 'white',
+                                        backgroundColor: location.pathname === '/dashboard' ? '#B8A589' : 'transparent',
+                                        '&:hover': {
+                                            backgroundColor: location.pathname === '/dashboard' ? '#FFD700' : 'rgba(255, 255, 255, 0.1)',
+                                        },
+                                        display: 'block',
+                                        textDecoration: 'none',
+                                        borderRadius: 1,
+                                    }}
+                                >
+                                    Dashboard
+                                </Button>
+                            )}
                         </Box>
                         {/* Cart Icon with Badge on Right Side */}
                         <IconButton
                             component={Link}
                             to="/cart"
                             color="inherit"
-                            sx={{ position: 'relative', ml: 2 }} 
+                            sx={{ position: 'relative', ml: 2 }}
                         >
-                            <Badge
-                                badgeContent={totalItems}
-                                color="primary"
-                                showZero
-                                max={100}
-                            >
-                                <ShoppingCart />
-                            </Badge>
+                            <ShoppingCart />
+                            {totalItems > 0 && (
+                                <Badge badgeContent={totalItems} color="error" />
+                            )}
                         </IconButton>
-                        {/* Account Icon with Menu for Login and Signup */}
-                        {!isLoggedIn && ( // Render AccountCircle only if not logged in
-                            <IconButton
-                                onClick={handleOpenAccountMenu}
-                                sx={{
-                                    color: 'white',
-                                    ml: 2,
-                                }}
-                            >
-                                <AccountCircle />
-                            </IconButton>
+                        {/* Display welcome message if logged in */}
+                        {isLoggedIn && username && (
+                            <Typography variant="body1" sx={{ color: 'white', ml: 2, display: { xs: 'none', md: 'block' } }}>
+                                <AccountCircle /> {username}
+                            </Typography>
                         )}
+                        {/* Account Icon with Menu for Login and Signup */}
+                        <IconButton
+                            onClick={handleOpenAccountMenu}
+                            sx={{
+                                color: 'white',
+                                ml: 2,
+                            }}
+                        >
+                            <AccountCircle />
+                        </IconButton>
                         <Menu
                             anchorEl={anchorElAccount}
                             open={Boolean(anchorElAccount)}
                             onClose={handleCloseAccountMenu}
                         >
                             {isLoggedIn ? (
-                                <>
-                                    <MenuItem disabled>
-                                        {username}
-                                    </MenuItem>
-                                </>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             ) : (
                                 <>
-                                    <MenuItem
-                                        component={Link}
-                                        to="/login"
-                                        onClick={handleCloseAccountMenu}
-                                    >
-                                        Login
-                                    </MenuItem>
-                                    <MenuItem
-                                        component={Link}
-                                        to="/signup"
-                                        onClick={handleCloseAccountMenu}
-                                    >
-                                        Sign Up
-                                    </MenuItem>
+                                    <MenuItem component={Link} to="/login">Login</MenuItem>
+                                    <MenuItem component={Link} to="/signup">Signup</MenuItem>
                                 </>
                             )}
                         </Menu>
-                        {/* Logout Icon */}
-                        {isLoggedIn && (
-                            <IconButton
-                                onClick={handleLogout}
-                                sx={{ color: 'white', ml: 2 }}
-                            >
-                                <Logout />
-                            </IconButton>
-                        )}
                     </Box>
                 </Toolbar>
             </Container>

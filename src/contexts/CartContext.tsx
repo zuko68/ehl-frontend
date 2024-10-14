@@ -6,7 +6,7 @@ export const CLEAR_CART = 'CLEAR_CART';
 export const MINUS_ITEM = 'MINUS_ITEM';
 
 interface CartItem {
-    id: number;
+    id: string;
     name: string;
     quantity: number;
     price: number;
@@ -18,10 +18,10 @@ interface CartState {
 }
 
 export type CartAction =
-  | { type: typeof ADD_ITEM; item: { id: number; name: string; price: number; quantity?: number } }
-  | { type: typeof REMOVE_ITEM; id: number }
+  | { type: typeof ADD_ITEM; item: { id: string; name: string; price: number; quantity?: number } }
+  | { type: typeof REMOVE_ITEM; id: string }
   | { type: typeof CLEAR_CART }
-  | { type: typeof MINUS_ITEM; id: number };
+  | { type: typeof MINUS_ITEM; id: string };
 
 const initialState: CartState = {
     cartItems: [],

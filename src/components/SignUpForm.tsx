@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, RadioGroup, FormControlLabel, Radio, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, Typography, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, InputAdornment, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const SignUpForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    userType: 'retailer', // Default user type
-    companyName: '', // Field for wholesaler
+    name: '',          // Updated to "name"
+    email: '',         // Email field
+    password: '',      // Password field
+    role: 'retailer',// Default user role
+    phone_number: '',   // Phone number field
+    address: '',       // Address field
+    company_name: '',   // Field for wholesaler
   });
 
   const [errors, setErrors] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    companyName: '', // Error for company name
+    name: '',          // Error for name
+    email: '',         // Error for email
+    password: '',      // Error for password
+    confirmPassword: '', // Error for confirm password
+    company_name: '',   // Error for company name
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar open state
   const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('error'); // Snackbar severity
@@ -34,18 +38,18 @@ const SignUpForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simple validation
     const newErrors = {
-      username: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
-      companyName: '',
+      company_name: '',
     };
 
-    if (!formData.username) {
-      newErrors.username = 'Username is required';
+    if (!formData.name) {
+      newErrors.name = 'Name is required';
     }
     if (!formData.email) {
       newErrors.email = 'Email is required';
@@ -53,11 +57,8 @@ const SignUpForm: React.FC = () => {
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    if (formData.userType === 'wholesaler' && !formData.companyName) {
-      newErrors.companyName = 'Company name is required for wholesalers';
+    if (formData.role === 'wholesaler' && !formData.company_name) {
+      newErrors.company_name = 'Company name is required for wholesalers';
     }
 
     setErrors(newErrors);
@@ -65,7 +66,7 @@ const SignUpForm: React.FC = () => {
     // If no errors, handle sign-up logic
     if (!Object.values(newErrors).some(error => error)) {
       try {
-        const response = await fetch('http://localhost:3000/signup', {
+        const response = await fetch('http://localhost:8000/api/v1/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ const SignUpForm: React.FC = () => {
         setSnackbarOpen(true);
         navigate('/login'); // Optionally navigate to login after successful signup
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         // Handle errors
         console.log(error.message || 'An unexpected error occurred');
@@ -111,14 +112,14 @@ const SignUpForm: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <TextField
           fullWidth
-          label="Username"
-          name="username"
+          label="Name"
+          name="name"
           variant="outlined"
           margin="normal"
-          value={formData.username}
+          value={formData.name}
           onChange={handleChange}
-          error={!!errors.username}
-          helperText={errors.username}
+          error={!!errors.name}
+          helperText={errors.name}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -162,13 +163,26 @@ const SignUpForm: React.FC = () => {
           fullWidth
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'} // Toggle between text and password
           variant="outlined"
           margin="normal"
           value={formData.password}
           onChange={handleChange}
           error={!!errors.password}
           helperText={errors.password}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  edge="end"
+                  sx={{ color: '#B8A589' }} // Adjust color if needed
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -183,40 +197,15 @@ const SignUpForm: React.FC = () => {
             },
           }}
         />
-        <TextField
-          fullWidth
-          label="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          variant="outlined"
-          margin="normal"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
-        
-        {/* User Type Selection */}
+
+        {/* User Role Selection */}
         <Typography variant="h6" gutterBottom sx={{ color: '#B8A589' }}>
-          Select User Type
+          Select User Role
         </Typography>
         <RadioGroup
           row
-          name="userType"
-          value={formData.userType}
+          name="role"
+          value={formData.role}
           onChange={handleChange}
           sx={{ mb: 2 }}
         >
@@ -225,17 +214,17 @@ const SignUpForm: React.FC = () => {
         </RadioGroup>
 
         {/* Conditional Rendering for Company Name */}
-        {formData.userType === 'wholesaler' && (
+        {formData.role === 'wholesaler' && (
           <TextField
             fullWidth
             label="Company Name"
-            name="companyName"
+            name="company_name"
             variant="outlined"
             margin="normal"
-            value={formData.companyName}
+            value={formData.company_name}
             onChange={handleChange}
-            error={!!errors.companyName}
-            helperText={errors.companyName}
+            error={!!errors.company_name}
+            helperText={errors.company_name}
             sx={{
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
@@ -252,35 +241,67 @@ const SignUpForm: React.FC = () => {
           />
         )}
 
-        <Button
+        <TextField
           fullWidth
-          type="submit"
-          variant="contained"
+          label="Phone Number"
+          name="phone_number"
+          variant="outlined"
+          margin="normal"
+          value={formData.phone_number}
+          onChange={handleChange}
           sx={{
-            mt: 2,
-            mb: 2,
-            backgroundColor: '#B8A589',
-            '&:hover': {
-              backgroundColor: '#FFD8AA',
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#B8A589',
+              },
+              '&:hover fieldset': {
+                borderColor: '#FFD8AA',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#FFD8AA',
+              },
             },
-            color: '#1F1F1F',
           }}
-        >
+        />
+        <TextField
+          fullWidth
+          label="Address"
+          name="address"
+          variant="outlined"
+          margin="normal"
+          value={formData.address}
+          onChange={handleChange}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#B8A589',
+              },
+              '&:hover fieldset': {
+                borderColor: '#FFD8AA',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#FFD8AA',
+              },
+            },
+          }}
+        />
+
+        <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 2, backgroundColor: '#B8A589', '&:hover': { backgroundColor: '#FFD8AA' } }}>
           Sign Up
         </Button>
+        <Typography variant="body2">
+          Don't have an account?{' '}
+          <Button
+            onClick={handleSignIn}
+            sx={{ color: '#B8A589', '&:hover': { textDecoration: 'underline' } }}
+            variant='text'
+          >
+            Sign In
+          </Button>
+        </Typography>
       </form>
-      <Typography variant="body2">
-        Already have an account?{' '}
-        <Button 
-          onClick={handleSignIn} 
-          sx={{ color: '#B8A589', '&:hover': { textDecoration: 'underline' } }} 
-        >
-          Sign In
-        </Button>
-      </Typography>
 
-      {/* Snackbar for error/success messages */}
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>

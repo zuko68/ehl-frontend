@@ -35,7 +35,7 @@ const Cart: React.FC = () => {
                 dispatch({ type: 'MINUS_ITEM', id }); // Dispatch MINUS_ITEM action
             }
         }
-    };    
+    };
 
     const calculateTotalPrice = () => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -60,34 +60,28 @@ const Cart: React.FC = () => {
                     </Typography>
                 ) : (
                     <List>
-                        {cartItems.map(item => (
-                            <ListItem key={item.id} sx={{ borderBottom: '1px solid #ddd', justifyContent: 'space-between' }}>
-                            <ListItemText
-                              primary={item.name}
-                              secondary={`Quantity: ${item.quantity}`}
-                            />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                              <Button variant="outlined" color="error" onClick={() => handleRemoveFromCart(item.id)}>
-                                Remove
-                              </Button>
-                              <Button
-                                variant="outlined"
-                                sx={{ marginLeft: 1 }}
-                                onClick={() => handleUpdateQuantity(item.id, true)} // Increment quantity
-                              >
-                                +
-                              </Button>
-                              <Button
-                                variant="outlined"
-                                sx={{ marginLeft: 1 }}
-                                onClick={() => handleUpdateQuantity(item.id, false)} // Decrement quantity
-                              >
-                                -
-                              </Button>
-                            </Box>
-                          </ListItem>                          
+                        {cartItems.map((item, index) => (
+                            <ListItem
+                                key={item.id || index} // Fallback to the index if id is invalid
+                                sx={{ borderBottom: '1px solid #ddd', justifyContent: 'space-between' }}
+                            >
+                                <ListItemText
+                                    primary={item.name}
+                                    secondary={`Quantity: ${item.quantity}`}
+                                />
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => handleRemoveFromCart(item.id)}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
+                            </ListItem>
                         ))}
                     </List>
+
                 )}
                 {cartItems.length > 0 && (
                     <Box textAlign="right" sx={{ mt: 2 }}>

@@ -10,7 +10,8 @@ import {
     Button,
     Badge,
 } from "@mui/material";
-import { Restaurant, ShoppingCart, AccountCircle } from "@mui/icons-material"; // Import AccountCircle icon
+import { ShoppingCart, AccountCircle } from "@mui/icons-material"; // Import AccountCircle icon
+import { MonetizationOnTwoTone } from "@mui/icons-material";
 import MenuIcon from '@mui/icons-material/Menu';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -92,7 +93,7 @@ export default function NavBar() {
                             to="/"
                             sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                         >
-                            <Restaurant />
+                            <MonetizationOnTwoTone />
                         </IconButton>
                         <Typography
                             variant="h6"
@@ -109,7 +110,7 @@ export default function NavBar() {
                                 textDecoration: 'none',
                             }}
                         >
-                            እህል
+                            LinkTrade
                         </Typography>
 
                         {/* Menu Icon for Mobile */}
@@ -163,9 +164,14 @@ export default function NavBar() {
                                         </Typography>
                                     </MenuItem>
                                 )}
+                                {/* Add Account options to menu for small screens */}
+                                <MenuItem key="account" onClick={handleOpenAccountMenu}>
+                                    <AccountCircle sx={{ mr: 1 }} />
+                                    {isLoggedIn ? username : 'Account'}
+                                </MenuItem>
                             </Menu>
                         </Box>
-                        <Restaurant sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <MonetizationOnTwoTone sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                         <Typography
                             variant="h5"
                             noWrap
@@ -182,9 +188,10 @@ export default function NavBar() {
                                 textDecoration: 'none',
                             }}
                         >
-                            እህል
+                            LinkTrade
                         </Typography>
                     </Box>
+
                     <Box
                         sx={{
                             display: 'flex',
@@ -261,24 +268,43 @@ export default function NavBar() {
                         {/* Account Icon with Menu for Login and Signup */}
                         <IconButton
                             onClick={handleOpenAccountMenu}
-                            sx={{
-                                color: 'white',
-                                ml: 2,
-                            }}
+                            color="inherit"
+                            sx={{ ml: 2, display: { xs: 'none', md: 'block' } }} // Hide on small screens
                         >
                             <AccountCircle />
                         </IconButton>
                         <Menu
+                            id="menu-account"
                             anchorEl={anchorElAccount}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
                             open={Boolean(anchorElAccount)}
                             onClose={handleCloseAccountMenu}
                         >
-                            {isLoggedIn ? (
-                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            {!isLoggedIn ? (
+                                <>
+                                    <MenuItem component={Link} to="/login" onClick={handleCloseAccountMenu}>
+                                        Login
+                                    </MenuItem>
+                                    <MenuItem component={Link} to="/signup" onClick={handleCloseAccountMenu}>
+                                        Sign Up
+                                    </MenuItem>
+                                </>
                             ) : (
                                 <>
-                                    <MenuItem component={Link} to="/login">Login</MenuItem>
-                                    <MenuItem component={Link} to="/signup">Signup</MenuItem>
+                                    <MenuItem component={Link} to="/profile" onClick={handleCloseAccountMenu}>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        Logout
+                                    </MenuItem>
                                 </>
                             )}
                         </Menu>

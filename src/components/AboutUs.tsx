@@ -90,17 +90,17 @@ const teamMembers = [
     image: FEMALE1PNG,
   },
   {
-    name: 'John Doe',
+    name: 'Samuel TK',
     position: 'Backend Developer',
     image: MALE2PNG,
   },
   {
     name: 'Mickyas Tesfaye',
-    position: 'Frontend Developer',
+    position: 'Frontend Developer & Backend Developer',
     image: Male1PNG,
   },
   {
-    name: 'Emily Johnson',
+    name: 'Fira Fikadu',
     position: 'Backend Developer',
     image: MALE2PNG,
   }

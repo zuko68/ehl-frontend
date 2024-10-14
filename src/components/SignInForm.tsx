@@ -78,16 +78,25 @@ const SignInForm: React.FC = () => {
     <Box 
       sx={{ 
         width: '100%', 
-        maxWidth: 400, 
+        maxWidth: { xs: '90%', sm: 400 }, // Responsive max width
         margin: '0 auto', 
-        mt: 5, 
-        padding: 3, 
+        mt: { xs: 3, sm: 5 }, // Adjust margin-top for smaller screens
+        padding: { xs: 2, sm: 3 }, // Adjust padding for smaller screens
         borderRadius: 2, 
         boxShadow: 3, 
-        backgroundColor: '#F5F5F5' 
+        backgroundColor: '#F5F5F5',
+        transition: 'all 0.3s ease-in-out', // Smooth transitions
       }}
     >
-      <Typography variant="h4" gutterBottom sx={{ color: '#B8A589' }}>
+      <Typography 
+        variant="h4" 
+        gutterBottom 
+        sx={{ 
+          color: '#B8A589',
+          fontSize: { xs: '1.8rem', sm: '2.125rem' }, // Responsive font size
+          textAlign: 'center', // Center the text on all screens
+        }}
+      >
         Sign In
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -158,11 +167,18 @@ const SignInForm: React.FC = () => {
           Sign In
         </Button>
       </form>
-      <Typography variant="body2">
+      <Typography 
+        variant="body2" 
+        sx={{ textAlign: 'center', mt: 1 }} // Center align and margin-top for spacing
+      >
         Don't have an account?{' '}
         <Button 
           onClick={handleSignUp} 
-          sx={{ color: '#B8A589', '&:hover': { textDecoration: 'underline' } }} 
+          sx={{ 
+            color: '#B8A589', 
+            '&:hover': { textDecoration: 'underline' }, 
+            fontSize: { xs: '0.9rem', sm: '1rem' } // Responsive font size
+          }} 
         >
           Sign Up
         </Button>

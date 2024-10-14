@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, InputAdornment, IconButton } from '@mui/material';
+import { Box, TextField, Button, Typography, RadioGroup, FormControlLabel, Radio, Snackbar, Alert, InputAdornment, IconButton, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -30,16 +30,17 @@ const SignUpForm: React.FC = () => {
 
   const navigate = useNavigate(); // Initialize useNavigate
 
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Reset error when user modifies the input
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simple validation
     const newErrors = {
       name: '',
       email: '',
@@ -48,29 +49,18 @@ const SignUpForm: React.FC = () => {
       company_name: '',
     };
 
-    if (!formData.name) {
-      newErrors.name = 'Name is required';
-    }
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    }
-    if (formData.role === 'wholesaler' && !formData.company_name) {
-      newErrors.company_name = 'Company name is required for wholesalers';
-    }
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+    if (formData.role === 'wholesaler' && !formData.company_name) newErrors.company_name = 'Company name is required for wholesalers';
 
     setErrors(newErrors);
 
-    // If no errors, handle sign-up logic
     if (!Object.values(newErrors).some(error => error)) {
       try {
         const response = await fetch('http://localhost:8000/api/v1/register', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
 
@@ -79,15 +69,11 @@ const SignUpForm: React.FC = () => {
           throw new Error(errorData.message || 'Signup failed');
         }
 
-        // If signup is successful, redirect or show a success message
         setSnackbarMessage('Signup successful!');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
         navigate('/login'); // Optionally navigate to login after successful signup
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        // Handle errors
         console.log(error.message || 'An unexpected error occurred');
         setSnackbarMessage(error.message || 'An unexpected error occurred');
         setSnackbarSeverity('error');
@@ -105,204 +91,227 @@ const SignUpForm: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 400, margin: '0 auto', mt: 5, padding: 3, borderRadius: 2, boxShadow: 3, backgroundColor: '#F5F5F5' }}>
-      <Typography variant="h4" gutterBottom sx={{ color: '#B8A589' }}>
+    <Box
+      sx={{
+        width: isSmallScreen ? '90%' : '100%', // Responsive width adjustment
+        maxWidth: 400,
+        margin: '0 auto',
+        mt: 5,
+        padding: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+        backgroundColor: '#F5F5F5',
+      }}
+    >
+      <Typography variant="h4" gutterBottom sx={{ color: '#B8A589', textAlign: 'center' }}>
         Sign Up
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          variant="outlined"
-          margin="normal"
-          value={formData.name}
-          onChange={handleChange}
-          error={!!errors.name}
-          helperText={errors.name}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          variant="outlined"
-          margin="normal"
-          value={formData.email}
-          onChange={handleChange}
-          error={!!errors.email}
-          helperText={errors.email}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Password"
-          name="password"
-          type={showPassword ? 'text' : 'password'} // Toggle between text and password
-          variant="outlined"
-          margin="normal"
-          value={formData.password}
-          onChange={handleChange}
-          error={!!errors.password}
-          helperText={errors.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                  edge="end"
-                  sx={{ color: '#B8A589' }} // Adjust color if needed
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
-
-        {/* User Role Selection */}
-        <Typography variant="h6" gutterBottom sx={{ color: '#B8A589' }}>
-          Select User Role
-        </Typography>
-        <RadioGroup
-          row
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          sx={{ mb: 2 }}
-        >
-          <FormControlLabel value="retailer" control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />} label="Retailer" />
-          <FormControlLabel value="wholesaler" control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />} label="Wholesaler" />
-        </RadioGroup>
-
-        {/* Conditional Rendering for Company Name */}
-        {formData.role === 'wholesaler' && (
-          <TextField
-            fullWidth
-            label="Company Name"
-            name="company_name"
-            variant="outlined"
-            margin="normal"
-            value={formData.company_name}
-            onChange={handleChange}
-            error={!!errors.company_name}
-            helperText={errors.company_name}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#B8A589',
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Name"
+              name="name"
+              variant="outlined"
+              value={formData.name}
+              onChange={handleChange}
+              error={!!errors.name}
+              helperText={errors.name}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#B8A589' },
+                  '&:hover fieldset': { borderColor: '#FFD8AA' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
                 },
-                '&:hover fieldset': {
-                  borderColor: '#FFD8AA',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#FFD8AA',
-                },
-              },
-            }}
-          />
-        )}
+              }}
+            />
+          </Grid>
 
-        <TextField
-          fullWidth
-          label="Phone Number"
-          name="phone_number"
-          variant="outlined"
-          margin="normal"
-          value={formData.phone_number}
-          onChange={handleChange}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Address"
-          name="address"
-          variant="outlined"
-          margin="normal"
-          value={formData.address}
-          onChange={handleChange}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#B8A589',
-              },
-              '&:hover fieldset': {
-                borderColor: '#FFD8AA',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#FFD8AA',
-              },
-            },
-          }}
-        />
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              variant="outlined"
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#B8A589' },
+                  '&:hover fieldset': { borderColor: '#FFD8AA' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
+                },
+              }}
+            />
+          </Grid>
 
-        <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 2, backgroundColor: '#B8A589', '&:hover': { backgroundColor: '#FFD8AA' } }}>
-          Sign Up
-        </Button>
-        <Typography variant="body2">
-          Don't have an account?{' '}
-          <Button
-            onClick={handleSignIn}
-            sx={{ color: '#B8A589', '&:hover': { textDecoration: 'underline' } }}
-            variant='text'
-          >
-            Sign In
-          </Button>
-        </Typography>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                      sx={{ color: '#B8A589' }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#B8A589' },
+                  '&:hover fieldset': { borderColor: '#FFD8AA' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom sx={{ color: '#B8A589' }}>
+              Select User Role
+            </Typography>
+            <RadioGroup
+              row
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+            >
+              <FormControlLabel
+                value="retailer"
+                control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />}
+                label="Retailer"
+              />
+              <FormControlLabel
+                value="wholesaler"
+                control={<Radio sx={{ color: '#B8A589', '&.Mui-checked': { color: '#FFD8AA' } }} />}
+                label="Wholesaler"
+              />
+            </RadioGroup>
+          </Grid>
+
+          {formData.role === 'wholesaler' && (
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Company Name"
+                name="company_name"
+                variant="outlined"
+                value={formData.company_name}
+                onChange={handleChange}
+                error={!!errors.company_name}
+                helperText={errors.company_name}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#B8A589' },
+                    '&:hover fieldset': { borderColor: '#FFD8AA' },
+                    '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
+                  },
+                }}
+              />
+            </Grid>
+          )}
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Phone Number"
+              name="phone_number"
+              variant="outlined"
+              value={formData.phone_number}
+              onChange={handleChange}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#B8A589' },
+                  '&:hover fieldset': { borderColor: '#FFD8AA' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Address"
+              name="address"
+              variant="outlined"
+              value={formData.address}
+              onChange={handleChange}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#B8A589' },
+                  '&:hover fieldset': { borderColor: '#FFD8AA' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD8AA' },
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: '#B8A589',
+                color: '#FFFFFF',
+                '&:hover': { backgroundColor: '#FFD8AA' },
+              }}
+            >
+              Sign Up
+            </Button>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography
+              variant="body2"
+              sx={{ textAlign: 'center', mt: 1 }} // Center align and margin-top for spacing
+            >
+              Don't have an account?{' '}
+              <Button
+                onClick={handleSignIn}
+                sx={{
+                  color: '#B8A589',
+                  '&:hover': { textDecoration: 'underline' },
+                  fontSize: { xs: '0.9rem', sm: '1rem' } // Responsive font size
+                }}
+              >
+                Sign In
+              </Button>
+            </Typography>
+          </Grid>
+        </Grid>
       </form>
 
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+      {/* Snackbar for success/error messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

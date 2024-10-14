@@ -23,10 +23,8 @@ const Footer: React.FC = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Simple email validation (you can enhance this as needed)
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailPattern.test(email)) {
-      // Simulate an API call
       console.log('Email submitted:', email);
       setSnackbarOpen(true);
       setEmail(''); // Clear the input field after submission
@@ -35,7 +33,10 @@ const Footer: React.FC = () => {
     }
   };
 
-  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -43,26 +44,34 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: '20px', backgroundColor: '#B4A266', color: '#fff', py: 5, marginTop: 4 }}>
+    <Box sx={{ backgroundColor: '#2c2c2c', color: '#fff', py: 5, px: 2 }}>
       <Grid container spacing={4} justifyContent="center">
         {/* Contact Information */}
         <Grid item xs={12} md={3}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontWeight: 'bold', textTransform: 'uppercase', color: '#FFD8AA' }}
+          >
             Contact Information
           </Typography>
-          <Typography variant="body2">Addis Ababa – Ethiopia</Typography>
-          <Typography variant="body2">(+251) 822-4545-2882</Typography>
+          <Typography variant="body2" sx={{ color: '#d1d1d1' }}>
+            Addis Ababa – Ethiopia
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#d1d1d1' }}>
+            (+251) 9-651-614-72
+          </Typography>
           <Box mt={2}>
-            <IconButton href="#" sx={{ color: '#fff', '&:hover': { color: '#1da1f2' } }}>
+            <IconButton href="https://facebook.com" target="_blank" sx={{ color: '#fff', '&:hover': { color: '#1da1f2' } }}>
               <Facebook />
             </IconButton>
-            <IconButton href="#" sx={{ color: '#fff', '&:hover': { color: '#E1306C' } }}>
+            <IconButton href="https://instagram.com" target="_blank" sx={{ color: '#fff', '&:hover': { color: '#E1306C' } }}>
               <Instagram />
             </IconButton>
-            <IconButton href="#" sx={{ color: '#fff', '&:hover': { color: '#FF0000' } }}>
+            <IconButton href="https://youtube.com" target="_blank" sx={{ color: '#fff', '&:hover': { color: '#FF0000' } }}>
               <YouTube />
             </IconButton>
-            <IconButton href="#" sx={{ color: '#fff', '&:hover': { color: '#0077b5' } }}>
+            <IconButton href="https://linkedin.com" target="_blank" sx={{ color: '#fff', '&:hover': { color: '#0077b5' } }}>
               <LinkedIn />
             </IconButton>
           </Box>
@@ -70,56 +79,76 @@ const Footer: React.FC = () => {
 
         {/* Quick Links */}
         <Grid item xs={12} md={2}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontWeight: 'bold', textTransform: 'uppercase', color: '#FFD8AA' }}
+          >
             Quick Links
           </Typography>
           <Box>
-            <Link href="#" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
+            <Link href="/about" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
               About
             </Link>
           </Box>
           <Box>
-            <Link href="#" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
-              Services
+            <Link href="/wholesalers-map" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
+              Wholesealler Map
             </Link>
           </Box>
           <Box>
-            <Link href="#" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
+            <Link href="/products" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
+              Products
+            </Link>
+          </Box>
+          <Box>
+            <Link href="/contact" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
               Contact
-            </Link>
-          </Box>
-          <Box>
-            <Link href="#" color="#FFD8AA" underline="none" sx={{ '&:hover': { textDecoration: 'underline', color: '#fff' } }}>
-              Team
             </Link>
           </Box>
         </Grid>
 
         {/* Our Services */}
         <Grid item xs={12} md={3}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontWeight: 'bold', textTransform: 'uppercase', color: '#FFD8AA' }}
+          >
             Our Services
           </Typography>
           <Box>
-            <Typography variant="body2" color="#FFD8AA">Product Listings</Typography>
+            <Typography variant="body2" color="#FFD8AA">
+              Product Listings
+            </Typography>
           </Box>
           <Box>
-            <Typography variant="body2" color="#FFD8AA">Loan and Credit Options</Typography>
+            <Typography variant="body2" color="#FFD8AA">
+              Loan and Credit Options
+            </Typography>
           </Box>
           <Box>
-            <Typography variant="body2" color="#FFD8AA">Order Management</Typography>
+            <Typography variant="body2" color="#FFD8AA">
+              Order Management
+            </Typography>
           </Box>
           <Box>
-            <Typography variant="body2" color="#FFD8AA">Market Insights</Typography>
+            <Typography variant="body2" color="#FFD8AA">
+              Market Insights
+            </Typography>
           </Box>
         </Grid>
 
         {/* Get Latest Update */}
         <Grid item xs={12} md={4}>
-          <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ fontWeight: 'bold', textTransform: 'uppercase', color: '#FFD8AA' }}
+          >
             Get Latest Update
           </Typography>
-          <Typography variant="body2" gutterBottom>
+          <Typography variant="body2" sx={{ color: '#d1d1d1' }} gutterBottom>
             Subscribe to our newsletter for the latest updates and insights.
           </Typography>
           <form onSubmit={handleSubmit}>
@@ -130,10 +159,23 @@ const Footer: React.FC = () => {
                 size="small"
                 value={email}
                 onChange={handleEmailChange}
-                sx={{ backgroundColor: '#fff', borderRadius: '4px', '& .MuiOutlinedInput-root': { borderColor: '#fff' } }}
+                sx={{
+                  backgroundColor: '#fff',
+                  borderRadius: '4px',
+                  '& .MuiOutlinedInput-root': { borderColor: '#fff' },
+                }}
                 required
               />
-              <Button variant="contained" type="submit" sx={{ ml: 1, bgcolor: '#FFD8AA', color: '#2c2c2c', '&:hover': { bgcolor: '#FFC107' } }}>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  ml: 1,
+                  bgcolor: '#FFD8AA',
+                  color: '#2c2c2c',
+                  '&:hover': { bgcolor: '#FFC107' },
+                }}
+              >
                 Subscribe
               </Button>
             </Box>

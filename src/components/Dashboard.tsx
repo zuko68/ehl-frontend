@@ -11,6 +11,8 @@ import {
   ListItem,
   ListItemText,
   Button,
+  MenuItem,
+  TextField,
 } from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import Chat from './chat';
@@ -66,6 +68,51 @@ export default function Dashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [user, setUser] = useState<User | null>(null); // Added user state to hold user details
   const token = sessionStorage.getItem("auth-token");
+  const [product, setProduct] = useState({
+    name: '',
+    description: '',
+    price: 0,
+    stock_quantity: 0,
+    category: '',
+    image: '',
+  });
+
+  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProduct({ ...product, [name]: value });
+  };
+
+  const handleAddProduct = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...product,
+          wholesaler: user,  // Current wholesaler's info
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add product');
+      }
+
+      // Optionally, reset the form after submission
+      setProduct({
+        name: '',
+        description: '',
+        price: 0,
+        stock_quantity: 0,
+        category: '',
+        image: '',
+      });
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
+  };
 
   useEffect(() => {
     if (!token) return; // Don't proceed if token doesn't exist
@@ -236,6 +283,82 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </Grid>
+
+        {/* Product Adding Form for Wholesalers */}
+        {isWholesaler && (
+          <Grid item xs={12} md={6}>
+            <Card variant="outlined" sx={{ padding: '20px', borderColor: '#B8A589', borderRadius: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Add a New Product
+              </Typography>
+              <TextField
+                label="Product Name"
+                fullWidth
+                name="name"
+                value={product.name}
+                onChange={handleProductChange}
+                margin="normal"
+              />
+              <TextField
+                label="Description"
+                fullWidth
+                multiline
+                name="description"
+                value={product.description}
+                onChange={handleProductChange}
+                margin="normal"
+              />
+              <TextField
+                label="Price"
+                type="number"
+                fullWidth
+                name="price"
+                value={product.price}
+                onChange={handleProductChange}
+                margin="normal"
+              />
+              <TextField
+                label="Stock Quantity"
+                type="number"
+                fullWidth
+                name="stock_quantity"
+                value={product.stock_quantity}
+                onChange={handleProductChange}
+                margin="normal"
+              />
+              <TextField
+                label="Category"
+                fullWidth
+                name="category"
+                value={product.category}
+                onChange={handleProductChange}
+                margin="normal"
+                select
+              >
+                <MenuItem value="electronics">Electronics</MenuItem>
+                <MenuItem value="fashion">Fashion</MenuItem>
+                <MenuItem value="home">Home</MenuItem>
+                {/* Add more categories as needed */}
+              </TextField>
+              <TextField
+                label="Image URL"
+                fullWidth
+                name="image"
+                value={product.image}
+                onChange={handleProductChange}
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddProduct}
+                sx={{ mt: 2, backgroundColor: '#B8A589', color: '#1F1F1F' }}
+              >
+                Add Product
+              </Button>
+            </Card>
+          </Grid>
+        )}
 
         {/* Pending Orders for Retailers */}
         {!isWholesaler && (
